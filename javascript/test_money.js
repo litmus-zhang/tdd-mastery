@@ -1,6 +1,7 @@
 const assert = require("assert");
 
 
+
 class Money {
     constructor(amount, currency) {
         this.amount = amount;
@@ -15,6 +16,18 @@ class Money {
     }
 }
 
+class Portfolio {
+    constructor() {
+        this.moneys = []
+    }
+    add(...moneys) {
+        this.moneys = this.moneys.concat(moneys)
+    }
+    evaluate(currency) {
+        let total = this.moneys.reduce((sum, money) => sum + money.amount, 0)
+        return new Money(total, currency)
+    }
+}
 
 let fiver = new Money(5, "USD")
 let tenner = fiver.times(2)
@@ -35,3 +48,7 @@ let fiveDollars = new Money(5, "USD")
 let tenDollars = new Money(10, "USD")
 assert.deepStrictEqual(fiveDollars.times(2), tenDollars)
 
+let fifteenDollar = new Money(15, "USD")
+let portfolio = new Portfolio()
+portfolio.add(fiveDollars, tenDollars)
+assert.deepStrictEqual(portfolio.evaluate("USD"), fifteenDollar)
