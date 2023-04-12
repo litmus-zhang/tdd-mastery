@@ -7,10 +7,16 @@ class Portfolio {
         this.moneys = this.moneys.concat(moneys)
     }
     evaluate(currency) {
-        let total = this.moneys.reduce((sum, money) => sum + money.amount, 0)
+        let total = this.moneys.reduce((sum, money) => sum + this.convert(money, currency), 0)
         return new Money(total, currency)
     }
+    convert(money, currency) {
+        let eurToUsd = 1.2
+        if (money.currency == currency) {
+            return money.amount
+        }
+        return money.amount * eurToUsd;
+    }
 }
-
 
 module.exports = Portfolio
