@@ -7,10 +7,23 @@ class Portfolio {
         this.moneys = this.moneys.concat(moneys)
     }
     evaluate(currency) {
-        let total = this.moneys.reduce((sum, money) => sum + this.convert(money, currency), 0)
-        return new Money(total, currency)
+        let failures = []
+
+        let total = this.moneys.reduce((sum, money) => {
+            let convertedAmount = this.convert(money, currency)
+            if (convertedAmount === undefined) {
+                failures.push(`${money.currency}->${currency}`)
+                return sum
+            }
+            return sum + convertedAmount
+        }, 0)
+        if (!failures.length) {
+            return new Money(total, currency)
+        }
+        throw new Error("Missing exchange rate(s): [" + failures.join(", ") + "]");
     }
     convert(money, currency) {
+
         let exchangeRate = new Map();
         exchangeRate.set("EUR->USD", 1.2)
         exchangeRate.set("USD->KRW", 1100)
@@ -18,7 +31,11 @@ class Portfolio {
             return money.amount
         }
         let key = `${money.currency}->${currency}`
-        return money.amount * exchangeRate.get(key);
+        let rate = exchangeRate.get(key)
+        if (rate === undefined) {
+            return undefined
+        }
+        return money.amount * rate;
     }
 }
 
