@@ -27,7 +27,7 @@ func (p Portfolio) Evaluate(currency string) (Money, error) {
 		failures = failures + f + ","
 	}
 	failures = failures + "]"
-	return NewMoney(0, ""), errors.New("Missing exchange rate(s)" + failures)
+	return NewMoney(0, ""), errors.New("Missing exchange rate(s):" + failures)
 }
 
 func convert(money Money, currency string) (float64, bool) {
